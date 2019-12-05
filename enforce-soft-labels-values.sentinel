@@ -91,7 +91,7 @@ label_cost_center_values = [
 ### Rules ###
 
 # Call the validation function
-label_cost_center_validated = validate_attribute_matches_expression("google_compute_instance", "cost_center", label_cost_center_values)
+label_cost_center_validated = validate_attribute_in_list("google_compute_instance", "cost_center", label_cost_center_values)
 
 #Main rule
 # for multiple labels to be validate we can write multiple rules in rules section 
