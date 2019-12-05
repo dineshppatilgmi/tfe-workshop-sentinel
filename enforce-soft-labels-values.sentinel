@@ -95,7 +95,7 @@ label_cost_center_validated = validate_attribute_matches_expression("google_comp
 
 #Main rule
 # for multiple labels to be validate we can write multiple rules in rules section 
-and then use "and" , "or" , "not" to combine the rules in main rule below
+#and then use "and" , "or" , "not" to combine the rules in main rule below
 main = rule {
   label_cost_center_validated
 }
