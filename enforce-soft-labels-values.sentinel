@@ -1,11 +1,8 @@
-# This policy uses the Sentinel tfplan import to require that
-# all Azure app services have https_only set to true so that
-# they can only be accessed via HTTPS
-
 ##### Imports #####
 
 import "tfplan"
 import "strings"
+import "types"
 
 ##### Functions #####
 
@@ -40,9 +37,11 @@ find_resources_from_plan = func(type) {
   return resources
 }
 
+
+
 # Validate that all instances of a specified resource type being modified have
-# a specified top-level attribute with a given value
-validate_attribute_has_value = func(type, attribute, value) {
+# a specified top-level attribute in a given list
+validate_attribute_in_list = func(type, attribute, allowed_values) {
 
   validated = true
 
@@ -55,7 +54,7 @@ validate_attribute_has_value = func(type, attribute, value) {
     # Skip resource instances that are being destroyed
     # to avoid unnecessary policy violations.
     # Used to be: if length(r.diff) == 0
-    if r.destroy {
+    if r.destroy and not r.requires_new {
       print("Skipping resource", address, "that is being destroyed.")
       continue
     }
@@ -68,11 +67,11 @@ validate_attribute_has_value = func(type, attribute, value) {
       # uncomment the next line.
       # validated = false
     } else {
-      # Validate that each instance has desired value
-      if (r.applied[attribute] else "") is not value {
+      # Validate that each instance has allowed value
+      if (r.applied[attribute] else "") not in allowed_values {
         print("Resource", address, "has attribute", attribute, "with value",
               r.applied[attribute] else "",
-              "that is not the required value:", value)
+              "that is not in the allowed list:", allowed_values)
         validated = false
       }
     }
@@ -82,9 +81,24 @@ validate_attribute_has_value = func(type, attribute, value) {
   return validated
 }
 
-##### Rules #####
 
-# Main rule that calls the validation function and evaluates results
+### List of mandatory labels ###
+label_cost_center_values = [
+  "EDC",
+  "IT",
+]
+
+### Rules ###
+
+# Call the validation function
+label_cost_center_validated = validate_attribute_matches_expression("google_compute_instance", "cost_center", label_cost_center_values)
+
+#Main rule
+# for multiple labels to be validate we can write multiple rules in rules section 
+and then use "and" , "or" , "not" to combine the rules in main rule below
 main = rule {
-  validate_attribute_has_value("azurerm_app_service", "https_only", true)
+  label_cost_center_validated
 }
+
+
+
