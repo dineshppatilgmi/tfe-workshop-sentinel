@@ -1,0 +1,1 @@
+Terraform Sentinel Policy for GCP Cloud Project.
