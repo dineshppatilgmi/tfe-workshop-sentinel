@@ -59,21 +59,13 @@ validate_attribute_in_list = func(type, attribute, allowed_values) {
       continue
     }
 
-    # Determine if the attribute is computed
-    if r.diff[attribute].computed else false is true {
-      print("Resource", address, "has attribute", attribute,
-            "that is computed.")
-      # If you want computed values to cause the policy to fail,
-      # uncomment the next line.
-      # validated = false
-    } else {
-      # Validate that each instance has allowed value
-      if (r.applied[attribute] else "") not in allowed_values {
+     # Validate that each label has allowed value
+      if (r.applied.labels.[attribute] else "") not in allowed_values {
         print("Resource", address, "has attribute", attribute, "with value",
               r.applied.labels.[attribute] else "",
               "that is not in the allowed list:", allowed_values)
         validated = false
-      }
+      
     }
 
   }
