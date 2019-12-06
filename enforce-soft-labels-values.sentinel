@@ -77,7 +77,7 @@ validate_attribute_in_list = func(type, attribute, allowed_values) {
 ### List of mandatory labels ###
 label_cost_center_values = [
   "EDC",
-  "IT",
+  "PFE",
 ]
 
 ### Rules ###
