@@ -62,7 +62,7 @@ validate_attribute_in_list = func(type, attribute, allowed_values) {
      # Validate that each label has allowed value
       if (r.applied.labels[attribute] else "") not in allowed_values {
         print("Resource", address, "has attribute", attribute, "with value",
-              r.applied.labels.[attribute] else "",
+              r.applied.labels[attribute] else "",
               "that is not in the allowed list:", allowed_values)
         validated = false
       
